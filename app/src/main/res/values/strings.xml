@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">fun_pet_project</string>
+    <string name="ok">Ok</string>
+    <string name="fail">Failure</string>
+    <string name="fail_unknowing">I\'m don\'t understand you</string>
+    <string name="query">Введите запрос</string>
+</resources>
