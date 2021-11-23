@@ -1,12 +1,17 @@
 package com.ch.ni.an.fun_pet_project
 
-import android.view.animation.AnimationUtils
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ch.ni.an.fun_pet_project.PrivateKeys.APPID
 import com.wolfram.alpha.WAEngine
 import com.wolfram.alpha.WAPlainText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.lang.StringBuilder
+import java.util.*
 
 class FunViewModel: ViewModel() {
 
@@ -23,19 +28,21 @@ class FunViewModel: ViewModel() {
 
     private fun initWolfRamEngine(){
         waEngine = WAEngine().apply {
-            appID = API_KEY
+            appID = APPID
             addFormat("plaintext")
         }
     }
 
-    fun askWolfRam(request :String) {
-        _state.value = viewModelScope.launch(Dispatchers.IO) {
+    fun askWolfRam(callback :ErrorCallback,request :String, ) {
+        _state.value = Pending()
+            viewModelScope.launch(Dispatchers.IO) {
             val query = waEngine.createQuery().apply { input = request }
             runCatching {
                 waEngine.performQuery(query)
             }.onSuccess {
                 if (it.isError) {
-                    _state.postValue(Error(it.isError.toString()))
+                    _state.postValue(Error())
+                    callback.provideText(it.errorMessage.toString())
                     return@launch
                 } else if (!it.isSuccess) {
                     _state.postValue(ErrorRequest())
@@ -57,7 +64,8 @@ class FunViewModel: ViewModel() {
                 }
 
             }.onFailure {
-                _state.postValue(Error(it.message.toString()))
+                callback.provideText(it.message.toString())
+                _state.postValue(Error())
             }
         }
     }
@@ -77,13 +85,10 @@ sealed class STATE {
 
 }
 class Pending() : STATE() {}
-class Success() : STATE() {}
-class Error(e :String) : STATE() {
-    fun showError(e :String) :String {
-        return e
-    }
 
-}
+class Success() : STATE() {}
+
+class Error() : STATE(){}
 class ErrorRequest : STATE() {}
 
 
@@ -96,6 +101,3 @@ class ErrorRequest : STATE() {}
 
 
 
-
-
-private const val API_KEY = "VL3TX8-HXP2JWVHQU"

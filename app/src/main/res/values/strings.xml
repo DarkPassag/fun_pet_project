@@ -4,4 +4,5 @@
     <string name="fail">Failure</string>
     <string name="fail_unknowing">I\'m don\'t understand you</string>
     <string name="query">Введите запрос</string>
+    <string name="input_text">Input text!</string>
 </resources>
