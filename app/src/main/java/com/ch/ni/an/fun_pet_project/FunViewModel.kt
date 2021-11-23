@@ -26,6 +26,11 @@ class FunViewModel: ViewModel() {
     private val listItems: MutableList<AnyItem> = mutableListOf()
 
 
+
+    /**
+     * appId = "Your api key"
+     * You can use const val or just string
+     */
     private fun initWolfRamEngine(){
         waEngine = WAEngine().apply {
             appID = APPID
@@ -45,6 +50,7 @@ class FunViewModel: ViewModel() {
                     callback.provideText(it.errorMessage.toString())
                     return@launch
                 } else if (!it.isSuccess) {
+                    callback
                     _state.postValue(ErrorRequest())
                     return@launch
                 }

@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity(), ErrorCallback {
     private fun updateUI(state :STATE){
         when(state){
             is ErrorRequest -> stateErrorRequest()
-            is Error -> statePending()
+            is Error -> stateUnPending()
             is Success -> stateUnPending()
             is Pending -> statePending()
         }
