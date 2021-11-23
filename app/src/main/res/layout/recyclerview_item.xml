@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+    android:layout_margin="8dp"
     android:orientation="vertical"
     android:background="@drawable/background_item"
-    android:padding="16dp"
+    android:padding="8dp"
     android:elevation="8dp">
 
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="@color/helper_yellow"
         android:textSize="30sp"
         tools:text="ParamParamParam"/>
 
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="@color/black"
+        android:textColor="@color/main_yellow"
         android:textSize="24sp"
         tools:text="ParamParamParam"/>
 </LinearLayout>

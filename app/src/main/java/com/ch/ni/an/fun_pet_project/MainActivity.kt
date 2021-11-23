@@ -1,5 +1,6 @@
 package com.ch.ni.an.fun_pet_project
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,8 @@ import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.SimpleAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.wolfram.alpha.WAEngine
@@ -26,10 +29,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var waEngine :WAEngine
     private lateinit var progressBar :ProgressBar
     private lateinit var resultInput :TextInputEditText
-    private lateinit var pods :MutableList<HashMap<String, String>>
-    private lateinit var list :ListView
-    private lateinit var adapter :SimpleAdapter
+    private lateinit var pods :MutableList<AnyItem>
+    private lateinit var recyclerView :RecyclerView
+    private lateinit var adapter: FunAdapter
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState :Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,16 +42,12 @@ class MainActivity : AppCompatActivity() {
 
         progressBar = findViewById(R.id.progressBar)
         resultInput = findViewById(R.id.textInput)
-        pods = mutableListOf()
-        list = findViewById(R.id.listView)
-        adapter = SimpleAdapter(
-            this,
-            pods,
-            R.layout.recyclerview_item,
-            arrayOf("Title", "Content"),
-            intArrayOf(R.id.titleTextView, R.id.contentTextView)
-        )
-        list.adapter = adapter
+        pods = mutableListOf<AnyItem>()
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = FunAdapter()
+        adapter.submitList(pods)
+        recyclerView.adapter = adapter
 
         resultInput.setOnEditorActionListener { _, actionId, event ->
             if(actionId == EditorInfo.IME_ACTION_DONE){
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         }.show()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun asWolfram(request: String){
         progressBar.visibility= View.VISIBLE
         CoroutineScope(Dispatchers.IO).launch {
@@ -112,13 +113,14 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        pods.add(0, HashMap<String, String>().apply {
-                            put("Title", pod.title)
-                            put("Content", content.toString())
-                        })
-
+                        pods.add(AnyItem(
+                            title = pod.title,
+                            content = content.toString()
+                        ))
+                        adapter.submitList(pods)
+                        adapter.notifyDataSetChanged()
                     }
-                    adapter.notifyDataSetChanged()
+
 
                 }
 
